@@ -71,21 +71,6 @@ export async function updateUserAvatar(req, res, next) {
   }
 }
 
-export async function createUser(req, res, next) {
-  const { name, about, avatar } = req.body;
-
-  try {
-    const newUser = await User.create({
-      name,
-      about,
-      avatar,
-    });
-    return res.status(201).json(newUser);
-  } catch (err) {
-    return next(err);
-  }
-}
-
 export async function deleteUser(req, res, next) {
   const { userId } = req.params;
 

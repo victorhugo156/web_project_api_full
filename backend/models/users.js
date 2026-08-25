@@ -1,21 +1,37 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 2,
     maxlength: 30,
+  },
+  email: {
+    type: String,
+    unique: true,
     required: true,
+    lowercase: true,
+    trim: true,
+    validate: {
+      validator: validator.isEmail,
+      message: 'Invalid email',
+    },
+  },
+  password: {
+    type: String,
+    minlength: 6,
+    required: true,
+    select: false,
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true,
   },
   avatar: {
     type: String,
-    required: true,
+
     validate: {
       validator(v) {
         const linkRegex = /^(https?:\/\/)(www\.)?[a-zA-Z0-9._~:/?%#[\]@!$&'()*+,;=-]+#?$/;

@@ -5,6 +5,7 @@ import cardsRouter from './routes/cards.js';
 import AuthMiddleware from './middlewares/authMiddleware.js';
 import handleUnknownRoute from './middlewares/handleUnknownRoute.js';
 import errorHandler from './middlewares/errorHandler.js';
+import authsRouter from './routes/signup.js';
 
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/aroundb');
@@ -16,6 +17,8 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+
+app.use('/auth', authsRouter);
 
 app.use(AuthMiddleware);
 
