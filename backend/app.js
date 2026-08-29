@@ -8,6 +8,7 @@ import handleUnknownRoute from './middlewares/handleUnknownRoute.js';
 import errorHandler from './middlewares/errorHandler.js';
 import authsRouter from './routes/auths.js';
 import 'dotenv/config';
+import { errorLogger, requestLogger } from './middlewares/reqLoggerMiddleware.js';
 
 
 async function main() {
@@ -21,6 +22,8 @@ const port = 3000;
 
 app.use(express.json());
 
+app.use(requestLogger)
+
 app.use('/auth', authsRouter);
 
 app.use(AuthMiddleware);
@@ -29,6 +32,8 @@ app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 app.use(errors());
+
+app.use(errorLogger);
 
 app.use(handleUnknownRoute);
 

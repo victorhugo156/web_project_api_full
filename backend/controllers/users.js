@@ -13,6 +13,17 @@ export async function getUsers(req, res, next) {
   }
 }
 
+export async function getCurrentUser(req, res, next) {
+  const currentUser = req.user._id;
+  try {
+    const users = await User.findById(currentUser);
+
+    return res.status(200).json(users);
+  } catch (err) {
+    return next(err);
+  }
+}
+
 export async function getUserByID(req, res, next) {
   const { userId } = req.params;
 

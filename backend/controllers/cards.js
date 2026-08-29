@@ -4,7 +4,6 @@ import BadRequestError from '../errors/BadRequestError.js';
 import NotFoundError from '../errors/NotFoundError.js';
 
 export async function getCards(req, res, next) {
-  console.log(req)
   try {
     const cards = await Card.find({}).populate('owner');
 

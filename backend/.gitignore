@@ -2,10 +2,12 @@
 logs
 *.log
 npm-debug.log*
+*.log
 
 # Diretório de dependências
 node_modules
 .env
+
 
 # Diretório de cache npm opcional
 .npm
