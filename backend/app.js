@@ -22,9 +22,9 @@ const port = 3000;
 
 app.use(express.json());
 
-app.use(requestLogger)
+app.use(requestLogger);
 
-app.use('/auth', authsRouter);
+app.use('/', authsRouter);
 
 app.use(AuthMiddleware);
 
