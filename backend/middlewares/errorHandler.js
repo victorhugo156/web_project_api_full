@@ -16,7 +16,7 @@ export default function errorHandler(error, _req, res, _next) {
   ) {
     return res.status(BAD_REQUEST).json({ message: 'Invalid data supplied' });
   }
-
+  console.log(error)
   return res
     .status(INTERNAL_SERVER_ERROR)
     .json({ message: 'An error has occurred on the server' });

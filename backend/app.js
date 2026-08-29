@@ -1,11 +1,14 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import { errors } from 'celebrate';
 import usersRouter from './routes/users.js';
 import cardsRouter from './routes/cards.js';
 import AuthMiddleware from './middlewares/authMiddleware.js';
 import handleUnknownRoute from './middlewares/handleUnknownRoute.js';
 import errorHandler from './middlewares/errorHandler.js';
-import authsRouter from './routes/signup.js';
+import authsRouter from './routes/auths.js';
+import 'dotenv/config';
+
 
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/aroundb');
@@ -24,6 +27,8 @@ app.use(AuthMiddleware);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+
+app.use(errors());
 
 app.use(handleUnknownRoute);
 

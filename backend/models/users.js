@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
+    default: 'Jacques Cousteau',
   },
   email: {
     type: String,
@@ -28,9 +29,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
+    defaul: 'Explorer',
   },
   avatar: {
     type: String,
+    default: 'https://practicum-content.s3.us-west-1.amazonaws.com/resources/moved_avatar_1604080799.jpg',
 
     validate: {
       validator(v) {
