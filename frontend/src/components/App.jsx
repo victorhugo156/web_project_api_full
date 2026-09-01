@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from 'react';
+import { useEffect, useContext } from 'react';
 import { Main } from './Main/Main';
 import { Login } from './Login/Login';
 import { Register } from './Register/Register';
@@ -8,10 +8,9 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
 import { ProtectedRoute } from './ProtectedRoute/ProtectedRoute';
 import { getJwtFromLocalStorage } from '../utils/token';
-import { getUserInfo } from '../utils/auth';
 import { Loader } from './Loader/Loader';
-import { login, register } from '../utils/auth';
 import { setJwtInLocalStorage } from '../utils/token';
+import { register, login, getUserInfo } from '../utils/auth';
 
 export function App() {
   const navigate = useNavigate();
@@ -48,7 +47,7 @@ export function App() {
           message: "Você foi registrado com sucesso! Agora você pode fazer login.",
           isSuccess: true
         })
-      }).catch((error)=>{
+      }).catch(()=>{
         setTooltip({
           message: "Ops, algo saiu deu errado! Por favor, tente novamente.",
           isSuccess: false
@@ -73,12 +72,13 @@ export function App() {
         setIsLoggedIn(true)
         setJwtInLocalStorage(response.token) // Salva o token no localStorage
         
-        getUserInfo(response.token)
+        api.getUserInfo()
         .then((user) => {
-          setUserEmail(user.data.email);
+          console.log(user)
+          setUserEmail(user.email);
           navigate('/');
         })
-        .catch((error)=>{
+        .catch(()=>{
           setTooltip({
             message: "O token fornecido é inválido",
             isSuccess: false

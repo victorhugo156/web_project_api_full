@@ -1,12 +1,32 @@
+import { getJwtFromLocalStorage } from "./token";
+
+
 export class Api {
     constructor({baseUrl, headers}) {
       this._baseUrl = baseUrl;
       this._headers = headers;
     }
+
+    __getHeaders(){
+        const token = getJwtFromLocalStorage()
+
+        let authHeaders = {}
+
+        if(token){
+            authHeaders = {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        return{
+            ...this._headers,
+            ...authHeaders
+        }
+    }
   
     getUserInfo() {
         return fetch(`${this._baseUrl}/users/me`, {
-            headers: this._headers
+            headers: this.__getHeaders()
         })
         .then(res =>{
             if(res.ok){
@@ -16,9 +36,9 @@ export class Api {
         })
     }
 
-    getInitialCards(){
+    getInitialCards(id){
         return fetch(`${this._baseUrl}/cards`, {
-            headers: this._headers
+            headers: this.__getHeaders()
         })
         .then(res =>{
             if(res.ok){
@@ -35,7 +55,7 @@ export class Api {
     updateUserInfo(name, description){
         return fetch(`${this._baseUrl}/users/me`, {
             method: "PATCH",
-            headers: this._headers,
+            headers: this.__getHeaders(),
             body: JSON.stringify({
               name: name,
               about: description
@@ -51,7 +71,7 @@ export class Api {
     updateUserAvatar(avatar){
         return fetch(`${this._baseUrl}/users/me/avatar`, {
             method: "PATCH",
-            headers: this._headers,
+            headers: this.__getHeaders(),
             body: JSON.stringify({
               avatar: avatar
             })
@@ -65,7 +85,7 @@ export class Api {
     addNewCard(name, link){
         return fetch(`${this._baseUrl}/cards`, {
             method: "POST",
-            headers: this._headers,
+            headers: this.__getHeaders(),
             body: JSON.stringify({
               name: name,
               link: link
@@ -81,7 +101,7 @@ export class Api {
     deleteCard(cardId){
         return fetch(`${this._baseUrl}/cards/${cardId}`, {
             method: "DELETE",
-            headers: this._headers
+            headers: this.__getHeaders()
         }).then(res =>{
             if(res.ok){
                 return { "message": "Card has been deleted" }
@@ -93,7 +113,7 @@ export class Api {
 changeLikeCardStatus(cardId, isCurrentlyLiked){
     return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
         method: isCurrentlyLiked ? "DELETE" : "PUT",
-        headers: this._headers
+        headers: this.__getHeaders()
     }).then(res =>{
         if(res.ok){
             return res.json();
@@ -105,9 +125,8 @@ changeLikeCardStatus(cardId, isCurrentlyLiked){
 }
 
 export const api = new Api({
-    baseUrl: "https://around-api.pt-br.tripleten-services.com/v1",
+    baseUrl: "http://localhost:3001",
     headers: {
-        authorization: "55429e97-7ca8-4f16-8688-40fe9e8b469d",
         "Content-Type": "application/json"
     }
 });
