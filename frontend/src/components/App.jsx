@@ -3,7 +3,7 @@ import { Main } from './Main/Main';
 import { Login } from './Login/Login';
 import { Register } from './Register/Register';
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
-import { api } from '../utils/api';
+import { api } from '../utils/Api';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
 import { ProtectedRoute } from './ProtectedRoute/ProtectedRoute';

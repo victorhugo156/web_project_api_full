@@ -1,6 +1,6 @@
 import { createContext } from "react";
 import { useState } from "react";
-import { api } from "../utils/api";
+import { api } from "../utils/Api";
 
 export const CurrentUserContext = createContext();
 
