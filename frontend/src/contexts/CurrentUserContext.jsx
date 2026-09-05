@@ -21,8 +21,6 @@ export function CurrentUserContextProvider({children}){
         })();
       };
 
-
-
       async function handleCardLike(card) {
 
         const isLiked = card.likes?.some(

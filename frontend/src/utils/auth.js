@@ -42,23 +42,3 @@ export const login = async (password, email)=> {
       })
 
 }
-
-export const getUserInfo = async (jwt)=> {
-
-  return fetch(`${BASE_URL}/users/me`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${jwt}`
-      },
-      credentials: 'include'
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }else{
-          return checkErrors(res)
-        }
-      })
-}
