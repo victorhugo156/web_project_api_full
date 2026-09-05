@@ -1,19 +1,19 @@
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import { errors } from 'celebrate';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import usersRouter from './routes/users.js';
 import cardsRouter from './routes/cards.js';
 import AuthMiddleware from './middlewares/authMiddleware.js';
 import handleUnknownRoute from './middlewares/handleUnknownRoute.js';
 import errorHandler from './middlewares/errorHandler.js';
 import authsRouter from './routes/auths.js';
-import 'dotenv/config';
 import { errorLogger, requestLogger } from './middlewares/reqLoggerMiddleware.js';
-import cookieParser from 'cookie-parser';
 
 async function main() {
-  await mongoose.connect('mongodb://localhost:27017/aroundb');
+  await mongoose.connect(process.env.DB_URL || 'mongodb://localhost:27017/aroundb');
 }
 
 main().then(() => console.log('Connected to MongoDB')).catch((err) => console.log(err));
