@@ -1,5 +1,4 @@
-
-
+import { BASE_URL } from "./auth";
 
 export class Api {
     constructor({baseUrl, headers}) {
@@ -191,7 +190,7 @@ changeLikeCardStatus(cardId, isCurrentlyLiked){
 
 
 export const api = new Api({
-    baseUrl: "http://localhost:3001",
+    baseUrl: BASE_URL,
     headers: {
         "Content-Type": "application/json"
     }
