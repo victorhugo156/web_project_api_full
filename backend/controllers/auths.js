@@ -60,7 +60,7 @@ export async function login(req, res, next) {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'none',
       maxAge: ONE_WEEK_MS,
     });
 
@@ -109,7 +109,7 @@ export async function refreshedToken(req, res, next) {
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       maxAge: ONE_WEEK_MS,
     });
 
@@ -127,7 +127,7 @@ export async function logout(req, res, next) {
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: true,
-      sameSite: 'lax',
+      sameSite: 'none',
     });
     return res.status(204).send();
   } catch (err) {
