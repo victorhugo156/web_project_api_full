@@ -19,7 +19,7 @@ async function main() {
 main().then(() => console.log('Connected to MongoDB')).catch((err) => console.log(err));
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(cors({
