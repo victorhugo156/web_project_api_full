@@ -1,4 +1,4 @@
-import { getJwtFromLocalStorage } from "./token";
+
 
 
 export class Api {
@@ -7,14 +7,14 @@ export class Api {
       this._headers = headers;
     }
 
-    __getHeaders(){
-        const token = getJwtFromLocalStorage()
+    _getHeaders(){
+        //const token = getJwtFromLocalStorage()
 
         let authHeaders = {}
 
-        if(token){
+        if(this._accessToken){
             authHeaders = {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${this._accessToken}`
             }
         }
 
@@ -23,10 +23,54 @@ export class Api {
             ...authHeaders
         }
     }
+
+    _refreshToken() {
+        return fetch(`${this._baseUrl}/refresh`, {
+            method: "POST",
+            headers: this._headers,
+            credentials: "include",
+        }).then((res) => {
+            if (res.ok) {
+                return res.json();
+            }
+            return Promise.reject(`Error: ${res.status}`);
+        });
+    }
+
+    async _fetchWithRefresh(url, options) {
+        const response = await fetch(url, options);
+
+        // Only refresh when the access token failed. Do not read response.json()
+        // here — that belongs to getUserInfo / addNewCard after a success.
+        if (response.status !== 401) {
+            return response;
+        }
+
+        const refreshResponse = await this._refreshToken();
+        this.setAccessToken(refreshResponse.token);
+
+        return fetch(url, {
+            ...options,
+            credentials: "include",
+            headers: this._getHeaders(),
+        });
+    }
+
+    setAccessToken(token){
+        this._accessToken = token
+    }
+
+    refresh() {
+        return this._refreshToken().then((data) => {
+            this.setAccessToken(data.token);
+            return data.token;
+        });
+    }
   
     getUserInfo() {
-        return fetch(`${this._baseUrl}/users/me`, {
-            headers: this.__getHeaders()
+        return this._fetchWithRefresh(`${this._baseUrl}/users/me`, {
+            headers: this._getHeaders(),
+            credentials: 'include'
         })
         .then(res =>{
             if(res.ok){
@@ -36,9 +80,10 @@ export class Api {
         })
     }
 
-    getInitialCards(id){
-        return fetch(`${this._baseUrl}/cards`, {
-            headers: this.__getHeaders()
+    getInitialCards(){
+        return this._fetchWithRefresh(`${this._baseUrl}/cards`, {
+            headers: this._getHeaders(),
+            credentials: 'include'
         })
         .then(res =>{
             if(res.ok){
@@ -53,9 +98,10 @@ export class Api {
     }
 
     updateUserInfo(name, description){
-        return fetch(`${this._baseUrl}/users/me`, {
+        return this._fetchWithRefresh(`${this._baseUrl}/users/me`, {
             method: "PATCH",
-            headers: this.__getHeaders(),
+            headers: this._getHeaders(),
+            credentials: 'include',
             body: JSON.stringify({
               name: name,
               about: description
@@ -69,9 +115,10 @@ export class Api {
     }
 
     updateUserAvatar(avatar){
-        return fetch(`${this._baseUrl}/users/me/avatar`, {
+        return this._fetchWithRefresh(`${this._baseUrl}/users/me/avatar`, {
             method: "PATCH",
-            headers: this.__getHeaders(),
+            headers: this._getHeaders(),
+            credentials: 'include',
             body: JSON.stringify({
               avatar: avatar
             })
@@ -83,9 +130,10 @@ export class Api {
         })
     }
     addNewCard(name, link){
-        return fetch(`${this._baseUrl}/cards`, {
+        return this._fetchWithRefresh(`${this._baseUrl}/cards`, {
             method: "POST",
-            headers: this.__getHeaders(),
+            headers: this._getHeaders(),
+            credentials: 'include',
             body: JSON.stringify({
               name: name,
               link: link
@@ -99,9 +147,10 @@ export class Api {
     }
 
     deleteCard(cardId){
-        return fetch(`${this._baseUrl}/cards/${cardId}`, {
+        return this._fetchWithRefresh(`${this._baseUrl}/cards/${cardId}`, {
             method: "DELETE",
-            headers: this.__getHeaders()
+            headers: this._getHeaders(),
+            credentials: 'include'
         }).then(res =>{
             if(res.ok){
                 return { "message": "Card has been deleted" }
@@ -111,9 +160,10 @@ export class Api {
     }
 
 changeLikeCardStatus(cardId, isCurrentlyLiked){
-    return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+    return this._fetchWithRefresh(`${this._baseUrl}/cards/${cardId}/likes`, {
         method: isCurrentlyLiked ? "DELETE" : "PUT",
-        headers: this.__getHeaders()
+        headers: this._getHeaders(),
+        credentials: 'include'
     }).then(res =>{
         if(res.ok){
             return res.json();
@@ -122,7 +172,23 @@ changeLikeCardStatus(cardId, isCurrentlyLiked){
     })
     
   }
+
+    logout() {
+        return this._fetchWithRefresh(`${this._baseUrl}/logout`, {
+            method: "POST",
+            headers: this._getHeaders(),
+            credentials: "include",
+        }).then((res) => {
+            if (res.ok || res.status === 204) {
+                this.setAccessToken(null);
+                return res;
+            }
+            return Promise.reject(`Error: ${res.status}`);
+        });
+    }
 }
+
+
 
 export const api = new Api({
     baseUrl: "http://localhost:3001",

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { celebrate, Joi } from 'celebrate';
-import { signup, login } from '../controllers/auths.js';
+import { signup, login, refreshedToken, logout } from '../controllers/auths.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
 
 const authsRouter = Router();
 
@@ -25,5 +26,8 @@ authsRouter.post(
   }),
   login,
 );
+authsRouter.post('/refresh', refreshedToken);
+
+authsRouter.post('/logout', authMiddleware, logout);
 
 export default authsRouter;

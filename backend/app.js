@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { errors } from 'celebrate';
+import cors from 'cors';
 import usersRouter from './routes/users.js';
 import cardsRouter from './routes/cards.js';
 import AuthMiddleware from './middlewares/authMiddleware.js';
@@ -9,7 +10,7 @@ import errorHandler from './middlewares/errorHandler.js';
 import authsRouter from './routes/auths.js';
 import 'dotenv/config';
 import { errorLogger, requestLogger } from './middlewares/reqLoggerMiddleware.js';
-
+import cookieParser from 'cookie-parser';
 
 async function main() {
   await mongoose.connect('mongodb://localhost:27017/aroundb');
@@ -18,9 +19,15 @@ async function main() {
 main().then(() => console.log('Connected to MongoDB')).catch((err) => console.log(err));
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
+
+app.use(cookieParser());
 
 app.use(requestLogger);
 

@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
       message: 'Invalid email',
     },
   },
+  refreshToken: {
+    type: String,
+    select: false,
+  },
   password: {
     type: String,
     minlength: 6,

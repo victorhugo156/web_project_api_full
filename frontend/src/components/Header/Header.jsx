@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { removeJwtFromLocalStorage } from "../../utils/token";
+import { api } from "../../utils/Api";
 
 export function Header() {
 
@@ -12,10 +12,12 @@ export function Header() {
 
 
   function handleLogout() {
-    removeJwtFromLocalStorage();
-    setIsLoggedIn(false);
-    setUserEmail('');
-    navigate('/signin');
+    api.logout()
+      .finally(() => {
+        setIsLoggedIn(false);
+        setUserEmail('');
+        navigate('/signin');
+      });
   }
 
 

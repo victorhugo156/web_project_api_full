@@ -5,7 +5,7 @@ export default function AuthMiddleware(req, res, next) {
   const token = req.headers.authorization;
 
   if (!token || !token.startsWith('Bearer ')) {
-    throw new UnauthorisedError();
+    throw new UnauthorisedError('No token provided');
   }
 
   const tokenJwt = token.replace('Bearer ', '');
@@ -14,7 +14,7 @@ export default function AuthMiddleware(req, res, next) {
   try {
     payload = jwt.verify(tokenJwt, process.env.JWT_SECRET);
   } catch (error) {
-    throw new UnauthorisedError();
+    throw new UnauthorisedError('Invalid Token');
   }
 
   req.user = {

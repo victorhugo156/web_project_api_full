@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Card from '../models/cards.js';
 import BadRequestError from '../errors/BadRequestError.js';
 import NotFoundError from '../errors/NotFoundError.js';
+import Forbidden from '../errors/Forbidden.js';
 
 export async function getCards(req, res, next) {
   try {
@@ -40,7 +41,7 @@ export async function likeCard(req, res, next) {
     const updatedCard = await Card.findByIdAndUpdate(
       cardId,
       { $addToSet: { likes: _id } },
-      { new: true, runValidators: true },
+      { returnDocument: 'after', runValidators: true },
     )
       .orFail(() => { throw new NotFoundError('Card not found'); });
 
@@ -62,7 +63,7 @@ export async function unlikeCard(req, res, next) {
     const updatedCard = await Card.findByIdAndUpdate(
       cardId,
       { $pull: { likes: _id } },
-      { new: true, runValidators: true },
+      { returnDocument: 'after', runValidators: true },
     )
       .orFail(() => { throw new NotFoundError('Card not found'); });
 
@@ -74,14 +75,21 @@ export async function unlikeCard(req, res, next) {
 
 export async function deleteCard(req, res, next) {
   const { cardId } = req.params;
+  const userId = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(cardId)) {
     return next(new BadRequestError('Invalid card ID'));
   }
 
   try {
-    const deletedCard = await Card.findByIdAndDelete(cardId)
-      .orFail(() => { throw new NotFoundError('Card not found'); });
+    const card = await Card.findOne({ _id: cardId }).orFail(() => { throw new NotFoundError('Card not found'); });
+    const isCardValid = card.owner.equals(userId);
+    if (!isCardValid) {
+      throw new Forbidden("You cannot delete another user's card");
+    }
+
+    const deletedCard = await card.deleteOne();
+
     return res.status(200).json(deletedCard);
   } catch (err) {
     return next(err);

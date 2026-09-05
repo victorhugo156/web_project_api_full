@@ -7,10 +7,8 @@ import { api } from '../utils/api';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { DefaultLayout } from '../layouts/DefaultLayout';
 import { ProtectedRoute } from './ProtectedRoute/ProtectedRoute';
-import { getJwtFromLocalStorage } from '../utils/token';
 import { Loader } from './Loader/Loader';
-import { setJwtInLocalStorage } from '../utils/token';
-import { register, login, getUserInfo } from '../utils/auth';
+import { register, login } from '../utils/auth';
 
 export function App() {
   const navigate = useNavigate();
@@ -70,8 +68,8 @@ export function App() {
       login(userData.password, userData.email )
       .then((response)=>{
         setIsLoggedIn(true)
-        setJwtInLocalStorage(response.token) // Salva o token no localStorage
-        
+        api.setAccessToken(response.token)
+
         api.getUserInfo()
         .then((user) => {
           console.log(user)
@@ -99,24 +97,20 @@ export function App() {
     }
 
   useEffect(() => {
-    const token = getJwtFromLocalStorage()
     setIsLoading(true);
-    if(!token) {
-      setIsLoading(false);
-      return;
-    }
 
-    getUserInfo(token)
-      .then((user) => {
+    api.refresh()
+      .then(() => {
         setIsLoggedIn(true);
-        setUserEmail(user.data.email);
         navigate('/');
       })
-      .catch(err => console.log(err))
+      .catch(() => {
+        setIsLoggedIn(false);
+      })
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [navigate, setIsLoading, setIsLoggedIn]);
 
 
   useEffect(() => {

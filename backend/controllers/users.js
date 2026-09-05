@@ -52,7 +52,7 @@ export async function updateUser(req, res, next) {
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { name, about },
-      { new: true, runValidators: true },
+      { returnDocument: 'after', runValidators: true },
     )
       .orFail(() => { throw new NotFoundError('User not found'); });
     return res.status(200).json(updatedUser);
@@ -73,7 +73,7 @@ export async function updateUserAvatar(req, res, next) {
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { avatar },
-      { new: true, runValidators: true },
+      { returnDocument: 'after', runValidators: true },
     )
       .orFail(() => { throw new NotFoundError('User not found'); });
     return res.status(200).json(updatedUser);

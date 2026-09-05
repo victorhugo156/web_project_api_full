@@ -25,7 +25,9 @@ export function CurrentUserContextProvider({children}){
 
       async function handleCardLike(card) {
 
-        const isLiked = card.isLiked;
+        const isLiked = card.likes?.some(
+          (like) => (like._id ?? like) === currentUser._id
+        );
     
         await api.changeLikeCardStatus(card._id, isLiked).then((newCard) => {
           setCards((element) => element.map((currentCard) => currentCard._id === card._id ? newCard : currentCard));

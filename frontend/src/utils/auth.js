@@ -31,6 +31,7 @@ export const login = async (password, email)=> {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
+      credentials: 'include'
     })
       .then((res) => {
         if (res.ok) {
@@ -51,6 +52,7 @@ export const getUserInfo = async (jwt)=> {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${jwt}`
       },
+      credentials: 'include'
     })
       .then((res) => {
         if (res.ok) {
