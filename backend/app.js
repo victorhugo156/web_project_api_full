@@ -21,12 +21,15 @@ main().then(() => console.log('Connected to MongoDB')).catch((err) => console.lo
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(express.json());
-app.use(cors({
+const corsOptions = {
   origin: process.env.CLIENT_URL || 'http://localhost:3000',
   credentials: true,
-}));
+};
 
+app.use(cors(corsOptions));
+app.options('/{*splat}', cors(corsOptions));
+
+app.use(express.json());
 app.use(cookieParser());
 
 app.use(requestLogger);
