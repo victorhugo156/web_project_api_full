@@ -108,7 +108,7 @@ export async function refreshedToken(req, res, next) {
     await user.save();
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
       sameSite: 'lax',
       maxAge: ONE_WEEK_MS,
     });
@@ -126,7 +126,7 @@ export async function logout(req, res, next) {
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: true,
       sameSite: 'lax',
     });
     return res.status(204).send();
