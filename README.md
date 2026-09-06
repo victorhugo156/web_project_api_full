@@ -6,9 +6,7 @@ Users can register, log in, edit their profile, and share photo cards. The React
 
 | | |
 |---|---|
-| **Frontend** | [web-project-api-full-three.vercel.app](https://web-project-api-full-three.vercel.app) |
-| **Backend** | [web-project-api-full-uiel.onrender.com](https://web-project-api-full-uiel.onrender.com) |
-
+| **Live Application** | [sharearound.vercel.app](https://sharearound.vercel.app/) |
 ---
 
 ## Features
