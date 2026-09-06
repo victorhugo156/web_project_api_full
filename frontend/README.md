@@ -1,6 +1,8 @@
 # Around the U.S. — React
 
-A social photo-sharing app built with React as part of the TripleTen Software Engineering program. This project is a full refactor of the original vanilla JavaScript version, migrated to a React component architecture with a live REST API.
+> Full-stack setup, env vars, and API docs: see the [root README](../README.md).
+
+A social photo-sharing app built with React as part of the TripleTen Software Engineering program. This folder is the frontend. It talks to the Express API in `../backend`.
 
 ## Features
 
@@ -74,13 +76,12 @@ npm run preview
 
 ## API
 
-The app connects to the TripleTen Around API:
+The app talks to **this project's Express backend** (`../backend`), not the old TripleTen hosted API.
 
-```
-https://around-api.pt-br.tripleten-services.com/v1
-```
+Local default: `http://localhost:3001`  
+Production: set `VITE_BACKEND_URL` (see `/.env.example` and the [root README](../README.md)).
 
-The `Api` class in `src/utils/api.js` handles all requests. A single configured instance is exported and shared across the app — this follows the Singleton pattern, ensuring one consistent API client throughout.
+The `Api` class in `src/utils/Api.js` handles card and user requests. Auth helpers live in `src/utils/auth.js`.
 
 ## Key React Concepts Used
 

@@ -1,8 +1,10 @@
 # Around — Express REST API (Backend)
 
+> Full-stack setup, env vars, and live URLs: see the [root README](../README.md).
+
 Around is the backend REST API for a social media-style application. It lets
 users manage their profiles, create photo cards, and like or unlike cards.
-Application data is persisted in MongoDB through Mongoose.
+Application data is persisted in MongoDB through Mongoose. The React frontend lives in `../frontend`.
 
 ---
 
@@ -67,8 +69,8 @@ npm run dev
 npm start
 ```
 
-The server runs on **http://localhost:3000**.
-It connects to the `aroundb` MongoDB database.
+The server runs on **http://localhost:3001**.
+It connects to the `aroundb` MongoDB database (or `DB_URL` in `.env`).
 
 ---
 
