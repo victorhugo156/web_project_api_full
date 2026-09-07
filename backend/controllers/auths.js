@@ -20,7 +20,7 @@ export async function signup(req, res, next) {
       email,
       password: passwordHashed,
     });
-    return res.status(201).json(newUser);
+    return res.status(201).json(newUser.email);
   } catch (err) {
     return next(err);
   }
