@@ -112,16 +112,19 @@ cd backend
 npm install
 ```
 
-Create `backend/.env` (this file is gitignored — never commit secrets):
+Copy the template and fill in your own values:
 
-```env
-DB_URL=mongodb://localhost:27017/aroundb
-JWT_SECRET=your-access-token-secret
-JWT_REFRESH_SECRET=your-refresh-token-secret
-CLIENT_URL=http://localhost:3000
+```bash
+cp .env.example .env
 ```
 
-`CLIENT_URL` must be the frontend **origin only** (scheme + host, no path such as `/signin`).
+`.env` is gitignored, so every developer creates their own. Generate your own token secrets:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+`CLIENT_URL` must be the frontend **origin only** (scheme + host, no path such as `/signin`, no trailing slash). For local work that is `http://localhost:3000`.
 
 ```bash
 npm run dev
@@ -136,13 +139,13 @@ cd frontend
 npm install
 ```
 
-Create `frontend/.env` from the example:
+Copy the template:
 
-```env
-VITE_BACKEND_URL=http://localhost:3001
+```bash
+cp .env.example .env
 ```
 
-Vite only exposes variables that start with `VITE_`. Restart the dev server after changing `.env`.
+It points at `http://localhost:3001`, the local API. Vite only exposes variables that start with `VITE_`, and bakes them in at build time — restart the dev server after changing `.env`.
 
 ```bash
 npm run dev
@@ -153,6 +156,8 @@ The app opens at **http://localhost:3000**.
 ---
 
 ## Environment variables
+
+Each folder has a `.env.example` with local defaults. Copy it to `.env` and edit. Production values are set in the Vercel and Render dashboards, never in a committed file.
 
 ### Backend
 
@@ -173,7 +178,7 @@ The app opens at **http://localhost:3000**.
 
 On **Vercel**, set `VITE_BACKEND_URL` and **redeploy** (Vite bakes this in at build time).
 
-On **Render**, set the backend variables in the dashboard. Root Directory must be `backend`. Start command: `npm start`.
+On **Render**, set the backend variables in the dashboard. Root Directory must be `backend`. Start command: `npm start`. `CLIENT_URL` there is the deployed frontend origin, and Node only reads environment variables at startup — restart the service after changing one.
 
 ---
 
