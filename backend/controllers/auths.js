@@ -6,6 +6,8 @@ import UnauthorisedError from '../errors/Unauthorised.js';
 const ONE_WEEK_SECONDS = 7 * 24 * 60 * 60;
 const ONE_WEEK_MS = ONE_WEEK_SECONDS * 1000;
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 // login will be added as a second named export
 // eslint-disable-next-line import/prefer-default-export
 export async function signup(req, res, next) {
@@ -59,8 +61,8 @@ export async function login(req, res, next) {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: ONE_WEEK_MS,
     });
 
@@ -108,8 +110,8 @@ export async function refreshedToken(req, res, next) {
     await user.save();
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: ONE_WEEK_MS,
     });
 
@@ -126,8 +128,8 @@ export async function logout(req, res, next) {
 
     res.clearCookie('refreshToken', {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
     });
     return res.status(204).send();
   } catch (err) {
